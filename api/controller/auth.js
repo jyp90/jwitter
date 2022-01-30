@@ -7,7 +7,7 @@ const jwtSecretKey = '1232312313'
 const jwtExpiresInDays = '2d'
 const bcrptSaltRounds = 10
 
-export async function signup(req, res) {
+export async function register(req, res) {
     const { username, password, name, email, url } = req.body;
     const found = await userREpository.findByUsername(username);
     if( found ) {
@@ -47,6 +47,16 @@ export async function login(req, res) {
     })
 }
 
-function createJwtToken(id) {
+export async function me(req, res, next) {
+    const user = await userREpository.findById(req.userId)
+    if(!user) {
+        return res.status(404).json( { 
+            message : 'Invalid user or password'
+        })
+    }
+    return res.body(user)
+}
+
+function createJwt(id) {
     return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays})
 }

@@ -22,15 +22,15 @@ $ npm i express express-async-errors bcrypt jsonwebtoken
 
 ### `POST`/auth/signup
 
-Reqeust
+Request
 
 ```json
 {
-	username,
-	password,
-  name,
-  email,
-  url
+    username,
+    password,
+    name,
+    email,
+    url
 }
 ```
 
@@ -45,7 +45,7 @@ Response
 
 ### `POST`/auth/login
 
-Reqeust
+Request
 
 ```json
 {

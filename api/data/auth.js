@@ -5,6 +5,7 @@ let users = [
         password: '',
         name: 'junyong',
         email: 'babung@gmail.com',
+        image: '',
         url: 'https://abbo.tistory.com'
     }
 ]
