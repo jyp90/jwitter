@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import jRouter from './router/jweets';
 import authRouter from './router/auth';
 import config from './config'
+import { Server } from 'socket.io';
 
 const app = express();
 
@@ -26,4 +27,22 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-app.listen(config.host.port);
+const server = app.listen(config.host.port);
+const socketIO = new Server(server, {
+  // option key values
+  cors: {
+    origin: '*'
+  }
+})
+
+socketIO.on('connection', (socket) => {
+  console.log('Clinet connected')
+  socketIO.emit('jwitter', 'Hello Name :) ')
+})
+
+// IN Client
+// const socketIO = socket(API_URL)
+// socketIO.on('connect_error', (err) => {
+  // console.log('socket error occured', err)
+// })
+// import.on('jwitter', (msg) => console.log)

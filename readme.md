@@ -6,6 +6,10 @@ $ npm i express express-async-errors bcrypt jsonwebtoken
 
 $ npm i dotenv
 
+### Install socket.io
+
+$ npm i socket.io
+
 # Jwitter API 명세
 
 # Auth
