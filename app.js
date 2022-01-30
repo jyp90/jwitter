@@ -6,7 +6,8 @@ import helmet from 'helmet';
 import jRouter from './router/jweets';
 import authRouter from './router/auth';
 import config from './config'
-import { db } from './api/data/db/database';
+import { sequelize } from './db/database';
+
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.use((error, req, res, next) => {
 });
 
 // DB Connection
-db.getConnection().then((conn) => console.log)
+sequelize.sync().then((client) => console.log)
 
 const server = app.listen(config.host.port);
 initSocket(server)

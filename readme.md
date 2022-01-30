@@ -2,17 +2,31 @@
 
 $ npm i express express-async-errors bcrypt jsonwebtoken
 
+---
+
 ### Install Dotenv
 
 $ npm i dotenv
+
+---
 
 ### Install socket.io
 
 $ npm i socket.io
 
+---
+
 ### Install mysql
 
 $ npm i mysql2
+
+---
+
+### Install sequelize
+
+$ npm install --save sequelize
+
+---
 
 # Jwitter API 명세
 

@@ -1,65 +1,81 @@
-import { db } from '../data/db/database.js'
+import SQ from 'sequelize';
+import { sequelize } from '../../db/database.js';
+import { User } from './auth.js';
+const DataTypes = SQ.DataTypes;
+const Sequelize = SQ.Sequelize;
 
-const SELECT_QUERY = `SELECT m.id, m.message, m.create_at, m.user_id, u.username, u.name, u.url 
-    FROM messages m JOIN users u ON m.user_id = u.id `;
+const Tweet = sequelize.define('tweet', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    text: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+  });
+Tweet.belongsTo(User);
+
+const INCLUDE_USER = {
+    attributes: [
+        'id',
+        'text',
+        'createdAt',
+        'userId',
+        [Sequelize.col('user.name'), 'name'],
+        [Sequelize.col('user.username'), 'username'],
+        [Sequelize.col('user.url'), 'url'],
+    ],
+    include: {
+        model: User,
+        attributes: [],
+    },
+};
+
+const ORDER_DESC = {
+    order: [['createdAt', 'DESC']],
+};
 
 export async function getAll() {
-    // return Promise.all(
-    //     msgs.filter((msg) => msg.removeAt != null).map(async (msg) => {
-    //         const { username, name, url } = await userRepository.findById(msg.userId)
-    //         return { ...msg, username, name, url }
-    //     })
-    // );
-    return db.execute(```
-    ${SELECT_QUERY} 
-    ORDER BY create_at DESC
-    ```)
-        .then((res) => res[0])
-}
-
-export async function getAllByUsername(username) {
-    return getAll().then((msgs) => msgs.filter((msg) => msg.username === username))
-}
-
-export async function getById(id) {
-    // const found = msgs.find((msg) => msg.id === id)
-    // if(!found) {
-    //     return null;
-    // }
-    // const { username, name, url } = await userRepository.findById(found.userId)
-    // return {...found, username, name, url};
-    return db.execute(`${SELECT_QUERY} WHERE m.id = ${id}`)
-        .then((res) => {
-            res[0][0]
-        })
-}
-
-export async function create(message, userId) {
-    // const msg = {
-    //     id: Date.now().toString(),
-    //     message,
-    //     createAt: new Date(),
-    //     userId
-    // }
-    // msgs = [msg, ...msgs];
-    // return getById(msg.id);
-    return db.execute(`INSERT INTO messages (message, create_at, user_id) VALUES (${message}, ${new Date()}, ${userId})`)
-        .then((res) => console.log)
-}
-
-export async function update(id, message) {
-    // const msg = msgs.find((msg) => msg.id === id)
-    // if (msg) {
-    //     msg.message = message;
-    // }
-    // return getById(msg.id)
-    return db.execute(`UPDATE messages SET message = ${message} WHERE id = ${id}`)
-        .then((res) => console.log)
-}
-
-export async function renove(id) {
-    // let msg = msgs.filter((msg) => msg.id === id);
-    // msg.removeAt = new Date();
-    return db.execute(`DELETE FROM messages WHERE id = ${id}`)
-    .then((res) => console.log)
-}
+    return Tweet.findAll({ ...INCLUDE_USER, ...ORDER_DESC });
+  }
+  
+  export async function getAllByUsername(username) {
+    return Tweet.findAll({
+      ...INCLUDE_USER,
+      ...ORDER_DESC,
+      include: {
+        ...INCLUDE_USER.include,
+        where: { username },
+      },
+    });
+  }
+  
+  export async function getById(id) {
+    return Tweet.findOne({
+      where: { id },
+      ...INCLUDE_USER,
+    });
+  }
+  
+  export async function create(text, userId) {
+    return Tweet.create({ text, userId }) //
+      .then((data) => this.getById(data.dataValues.id));
+  }
+  
+  export async function update(id, text) {
+    return Tweet.findByPk(id, INCLUDE_USER) //
+      .then((tweet) => {
+        tweet.text = text;
+        return tweet.save();
+      });
+  }
+  
+  export async function remove(id) {
+    return Tweet.findByPk(id) //
+      .then((tweet) => {
+        tweet.destroy();
+      });
+  }
