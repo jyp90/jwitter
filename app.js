@@ -28,21 +28,4 @@ app.use((error, req, res, next) => {
 });
 
 const server = app.listen(config.host.port);
-const socketIO = new Server(server, {
-  // option key values
-  cors: {
-    origin: '*'
-  }
-})
-
-socketIO.on('connection', (socket) => {
-  console.log('Clinet connected')
-  socketIO.emit('jwitter', 'Hello Name :) ')
-})
-
-// IN Client
-// const socketIO = socket(API_URL)
-// socketIO.on('connect_error', (err) => {
-  // console.log('socket error occured', err)
-// })
-// import.on('jwitter', (msg) => console.log)
+initSocket(server)
