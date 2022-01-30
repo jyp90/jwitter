@@ -5,12 +5,9 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import jRouter from './router/jweets';
 import authRouter from './router/auth';
-import dotenv from 'dotenv'
-dotenv.config()
+import config from './config'
 
 const app = express();
-
-console.log(process.env)
 
 app.use(express.json());
 app.use(helmet());
@@ -28,4 +25,5 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
-app.listen(8080);
+
+app.listen(config.host.port);
