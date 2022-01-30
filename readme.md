@@ -10,6 +10,10 @@ $ npm i dotenv
 
 $ npm i socket.io
 
+### Install mysql
+
+$ npm i mysql2
+
 # Jwitter API 명세
 
 # Auth

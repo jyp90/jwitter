@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import jRouter from './router/jweets';
 import authRouter from './router/auth';
 import config from './config'
-import { Server } from 'socket.io';
+import { db } from './api/data/db/database';
 
 const app = express();
 
@@ -26,6 +26,9 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
+
+// DB Connection
+db.getConnection().then((conn) => console.log)
 
 const server = app.listen(config.host.port);
 initSocket(server)
