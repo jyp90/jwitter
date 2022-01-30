@@ -2,10 +2,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import {} from 'express-async-errors'
 import * as userREpository from '../data/auth.js'
-
-const jwtSecretKey = '1232312313'
-const jwtExpiresInDays = '2d'
-const bcrptSaltRounds = 10
+import env from 'dotenv'
 
 export async function register(req, res) {
     const { username, password, name, email, url } = req.body;
@@ -15,7 +12,7 @@ export async function register(req, res) {
             { message: `${username} already exists`}
         )
     }
-    const hashed = await bcrypt.hash(password, bcrptSaltRounds)
+    const hashed = await bcrypt.hash(password, env.SALT_ROUNDS)
     const userId = await userREpository.createUser({
         username,
         password: hashed,
@@ -58,5 +55,5 @@ export async function me(req, res, next) {
 }
 
 function createJwt(id) {
-    return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays})
+    return jwt.sign({ id }, env.SECRET_KEY, { expiresIn: env.EXPIRES_SECONDS})
 }

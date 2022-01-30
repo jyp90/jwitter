@@ -2,6 +2,10 @@
 
 $ npm i express express-async-errors bcrypt jsonwebtoken
 
+### Install Dotenv
+
+$ npm i dotenv
+
 # Jwitter API 명세
 
 # Auth
