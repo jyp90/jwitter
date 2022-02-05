@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import jRouter from './router/jweets';
 import authRouter from './router/auth';
 import config from './config'
-import { sequelize } from './db/database';
+import { connectDB } from './db/database';
 
 
 const app = express();
@@ -28,8 +28,9 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-// DB Connection
-sequelize.sync().then((client) => console.log)
+connectDB().then(db => {
+  console.log('Initialize MongoDB');
 
-const server = app.listen(config.host.port);
-initSocket(server)
+  const server = app.listen(config.host.port);
+  initSocket(server)
+}).catch(console.error)

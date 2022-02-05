@@ -28,6 +28,12 @@ $ npm install --save sequelize
 
 ---
 
+### Install mongodb
+
+$ npm install mongodb
+
+---
+
 # Jwitter API 명세
 
 # Auth
