@@ -1,45 +1,37 @@
-import SQ from 'sequelize';
-import { sequelize } from '../../db/database.js';
-const DataTypes = SQ.DataTypes;
+import { getUsers } from '../../db/database.js'
+import MongoDB from 'mongodb'
+const ObjectId = MongoDB.ObjectId
 
-export const User = sequelize.define(
-  'users',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
-    username: {
-      type: DataTypes.STRING(45),
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
-    url: DataTypes.TEXT,
-  },
-  { timestamps: false }
-);
-
+/**
+ * query = { username : username }
+ * @param {*} username 
+ * @returns 
+ */
 export async function findByUsername(username) {
-  return User.findOne({ where: { username } });
+  return getUsers().findOne({ username })
+  .then(mapOptionalUser)
 }
 
+/**
+ * _id 로 저장된 MongoDB id 값으로 검색
+ * @param {*} id 
+ * @returns 
+ */
 export async function findById(id) {
-  return User.findByPk(id);
+  return getUsers().findOne({_id : new ObjectId(id)})
+    .then(mapOptionalUser)
 }
 
+/**
+ * 
+ * @param {*} user 
+ * @returns 
+ */
 export async function createUser(user) {
-  return User.create(user).then((data) => data.dataValues.id);
+  return getUsers().insertOne(user)
+    .then(data => data.inseredId.toString())
+}
+
+function mapOptionalUser(user) {
+  return user ? {...user, id: user._id} : null
 }

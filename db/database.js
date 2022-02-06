@@ -1,7 +1,18 @@
 import MongoDB from 'mongodb'
 import { config } from '../config.js'
 
+let db;
 export async function connectDB() {
   return MongoDB.MongoClient.connect(config.db.host)
-    .then((client) => client.db())
+    .then((client) => {
+      db = client.db()
+    })
+}
+
+export function getUsers() {
+  return db.collection('users');
+}
+
+export function getJweets() {
+  return db.collection('jweets')
 }
